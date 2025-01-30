@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operation Details</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Operation Details</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Overview</a></li>
+                <li><a href="technical-details.html">Technical Details</a></li>
+                <li><a href="operations-details.html">Operations Details</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <button id="resetButton">Reset Operations Log</button>
+        <h2>Operation Logs</h2>
+        <table id="operationLogsTable">
+            <tr>
+                <th>Operation Name</th>
+                <th>Start Time</th>
+                <th>Stop Time</th>
+                <th>Elapsed Time (seconds)</th>
+                <th>Copies Produced</th>
+                <th>Repair Time (seconds)</th>
+                <th>Scheduled</th>
+                <th>Manual Pauses</th>
+            </tr>
+        </table>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const operationLogsTable = document.getElementById('operationLogsTable');
+
+            function updateOperationsPage() {
+                const machineLogs = JSON.parse(localStorage.getItem('machineLogs')) || [];
+                operationLogsTable.innerHTML = `
+                    <tr>
+                        <th>Operation Name</th>
+                        <th>Start Time</th>
+                        <th>Stop Time</th>
+                        <th>Elapsed Time (seconds)</th>
+                        <th>Copies Produced</th>
+                        <th>Repair Time (seconds)</th>
+                        <th>Scheduled</th>
+                        <th>Manual Pauses</th>
+                    </tr>
+                `;
+                machineLogs.forEach(log => {
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${log.operationName}</td>
+                        <td>${log.startTime}</td>
+                        <td>${log.stopTime}</td>
+                        <td>${log.elapsedTime}</td>
+                        <td>${log.copiesProduced}</td>
+                        <td>${log.repairTime}</td>
+                        <td>${log.scheduled ? 'Yes' : 'No'}</td>
+                        <td>${log.manualPauseCount}</td>
+                    `;
+                    operationLogsTable.appendChild(row);
+                });
+            }
+
+            function resetOperationsLog() {
+                localStorage.setItem('machineLogs', JSON.stringify([]));
+                updateOperationsPage();
+            }
+
+            document.getElementById("resetButton").addEventListener("click", () => {
+                resetOperationsLog();
+                sendSignalToESP32('reset', 'A');
+            });
+
+            updateOperationsPage();
+        });
+
+        function sendSignalToESP32(signal, parameter = '') {
+            fetch(`http://your-esp32-ip/${signal}?param=${parameter}`)
+                .then(response => response.json())
+                .then(data => console.log('Signal sent:', data))
+                .catch(error => console.error('Error sending signal:', error));
+        }
+
+        document.getElementById("startButton").addEventListener("click", () => {
+            startMachine();
+            sendSignalToESP32('start', 'A');
+        });
+    </script>
+</body>
+</html>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #000; /* Black background */
+        margin: 0;
+        padding: 0;
+        color: #fff; /* White text */
+        transition: background-color 0.5s ease, color 0.5s ease; /* Smooth transition for background and text color */
+    }
+
+    h1, h2 {
+        text-align: center;
+        transition: color 0.5s ease; /* Smooth transition for text color */
+    }
+
+    header {
+        background-color: #000; /* Black background */
+        color: #ffff00; /* Yellow text */
+        padding: 10px 0;
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2); /* Shadow effect */
+        transition: background-color 0.5s ease, color 0.5s ease; /* Smooth transition for background and text color */
+    }
+
+    nav ul {
+        list-style: none;
+        padding: 0;
+        text-align: center;
+    }
+
+    nav ul li {
+        display: inline;
+        margin: 0 10px;
+    }
+
+    nav ul li a {
+        color: #ffff00; /* Yellow text */
+        text-decoration: none;
+        transition: color 0.5s ease; /* Smooth transition for text color */
+    }
+
+    nav ul li a:hover {
+        color: #fff; /* White text on hover */
+    }
+
+    table {
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background: #333; /* Dark gray background */
+        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1); /* Shadow effect */
+        transition: background-color 0.5s ease; /* Smooth transition for background color */
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+        transition: background-color 0.5s ease, color 0.5s ease; /* Smooth transition for background and text color */
+    }
+
+    th {
+        background-color: #000; /* Black background */
+        color: #ffff00; /* Yellow text */
+    }
+
+    tr:nth-child(even) {
+        background-color: #444; /* Slightly lighter gray */
+    }
+
+    tr:hover {
+        background-color: #555; /* Even lighter gray on hover */
+    }
+
+    @media (max-width: 600px) {
+        header h1 {
+            font-size: 1.5em;
+        }
+
+        nav ul li {
+            display: block;
+            margin: 10px 0;
+        }
+
+        button {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+        }
+
+        table th, table td {
+            padding: 5px;
+        }
+    }
+</style>

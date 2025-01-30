@@ -3,36 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Machine Control</title>
-    <script defer src="script.js"></script>
+    <title>Plastic Machine Control</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="main.js" defer></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        button { font-size: 18px; padding: 10px 20px; margin: 10px; cursor: pointer; border: none; border-radius: 5px; }
-        #startButton { background-color: green; color: white; }
-        #stopButton { background-color: red; color: white; }
-        #status { font-size: 22px; margin-top: 20px; }
-    </style>
-</head>
-<body>
-    <h1>Machine Control Panel</h1>
-    <button id="startButton">Start Machine</button>
-    <button id="stopButton">Stop Machine</button>
-
-    <p id="start">Status: <span id="machineStatus">Loading...</span></p>
-    <p id="statusText" style="color: white;">0</p>
-
-    <script>
-        function updateStatus(status) {
-            localStorage.setItem("machineStatus", status);
-            document.getElementById("machineStatus").textContent = status === "1" ? "1" : "0";
-            document.getElementById("statusText").textContent = status;
-
-            // Notify status.html to update
-            window.dispatchEvent(new Event("storage"));
+        body {
+            background-color: rgba(0, 0, 0, 0.425); /* 80% transparent black background */
+            animation: fadeIn 1s ease-in-out; /* Fade-in effect for body */
+            font-family: 'Roboto', sans-serif; /* Modern font */
+            color: #e0e0e0; /* Light gray text */
+        }
+        main {
+            background-color: rgba(50, 50, 50, 0.433); /* 90% transparent dark gray background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            max-width: 800px;
+            margin: 20px auto;
+            transition: all 0.3s ease-in-out; /* Animation for main content */
+            animation: slideIn 1s ease-in-out; /* Slide-in effect for main content */
+        }
+        main:hover {
+            box-shadow: 0 0 30px rgba(255, 143, 143, 0.507); /* Enhanced shadow effect */
+            transform: scale(1.02); /* Slightly scale up on hover */
         }
 
-        document.getElementById("startButton").addEventListener("click", () => updateStatus("1"));
-        document.getElementById("stopButton").addEventListener("click", () => updateStatus("0"));
+        @media (max-width: 600px) {
+            main {
+                padding: 10px;
+            }
+        }
+        nav ul li a {
+            transition: color 0.3s ease-in-out; /* Animation for navigation links */
+        }
+        nav ul li a:hover {
+            color: rgba(255, 255, 255, 0.7); /* 70% transparent white color on hover */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Shadow effect on hover */
+        }
+        #controlsContainer {
+            background-color: rgba(50, 50, 50, 0.399); /* 90% transparent dark gray background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease-in-out;
+            animation: fadeIn 1s ease-in-out; /* Fade-in effect for controls container */
+        }
+        #status {
+            background-color: rgba(50, 50, 50, 0); /* 90% transparent dark gray background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            transition: all 0.3s ease-in-out;
+            animation: fadeIn 1s ease-in-out; /* Fade-in effect for status */
+        }
+        #statusBar {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #33333300; /* Dark gray background */
+            color: #e0e0e0; /* Light gray font */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            text-align: center;
+            font-size: 1.2em;
+            animation: pulse 2s infinite; /* Pulse effect for status bar */
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        button {
+            background-color: #ff5722; /* Industrial orange */
+            color: #fff; /* White text */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        button:hover {
+            background-color: #e64a19; /* Darker industrial orange */
+            transform: scale(1.05);
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.9); /* 90% transparent black background */
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
+            animation: fadeIn 1s ease-in-out; /* Fade-in effect for header */
+        }
+        header h1 {
+            color: #ff5722; /* Industrial orange */
+            text-shadow: 0 0 10px rgba(255, 87, 34, 0.7); /* Shadow effect */
+        }
+        /* Toggle Switch CSS */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ff5722; /* Match the button color */
+            transition: .4s;
+            border-radius: 34px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow */
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow */
+        }
+
+        input:checked + .slider {
+            background-color: #4caf50; /* Green when checked */
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
+</head>
+    
+<body>
+    <header>
+        <img src="https://www.3erp.com/wp-content/uploads/2020/04/what-is-injection-molding.png" alt="Logo" style="width: 100px; height: auto;">
+        <h1>Plastic Injection Machine Control Interface</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Overview</a></li>
+                <li><a href="technical-details.html">Technical Details</a></li>
+                <li><a href="operations-details.html">Operations Details</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div>
+            <label for="operationNameInput" style="color: #e0e0e0; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); font-size: 1.5em;">Operation Name:</label>
+            <input type="text" id="operationNameInput" placeholder="Enter operation name">
+            <button id="setOperationNameButton">Set Operation Name</button>
+        </div>
+        <div id="copiesInputContainer" style="display: none;">
+            <label for="copiesInput" style="color: #e0e0e0; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); font-size: 1.5em;">Number of Copies to Produce:</label>
+            <input type="number" id="copiesInput" value="0" min="0">
+            <button id="copiesInputButton">Select Copies</button>
+        </div>
+        <div id="choiceContainer" style="display: none;">
+            <button id="nowButton">Now</button>
+            <button id="scheduleButton">Schedule</button>
+        </div>
+        <div id="scheduleContainer" style="display: none;">
+            <label for="startTimeInput">Start Time:</label>
+            <input type="datetime-local" id="startTimeInput">
+            <button id="scheduleStartButton">Schedule Start</button>
+        </div>
+        <div id="controlsContainer" style="display: none;">
+                <label class="switch">
+                    <input type="checkbox" id="toggleSwitch">
+                    <span class="slider round"></span>
+                </label>
+                <p>Machine Status: <span id="machineStatus">Stopped</span></p>
+            
+                <script>
+                    // Open blank.html in a new window after password verification
+        let blankWindow;
+        
+        window.onload = function() {
+            const password = prompt("Enter password to access:");
+            if (password !== "ADMIN") {
+                alert("Access denied.");
+                document.body.innerHTML = "<h1 style='color: #e0e0e0; text-align: center;'>Access Denied</h1>";
+                return;
+            }
+            blankWindow = window.open('blank.html', 'Blank Page', 'width=1,height=1,left=1100,top=0');
+        };
+
+        // ... rest of the existing script code ...
+                    // Function to update status and notify other pages
+                    function updateStatus(status) {
+                        localStorage.setItem("machineStatus", status);
+                        document.getElementById("machineStatus").textContent = status === "0" ? "Running" : "Stopped";
+                        window.dispatchEvent(new Event("storage"));
+                    }
+            
+                    document.getElementById("toggleSwitch").addEventListener("change", (event) => {
+                        updateStatus(event.target.checked ? "1" : "0");
+                    });
+            
+                    // Load stored status on page load
+                    document.getElementById("machineStatus").textContent =
+                        localStorage.getItem("machineStatus") === "0" ? "Running" : "Stopped";
+                </script>
+            </body>
+        </body>
+            </label>
+            <button id="repairButton">Repair Machine</button>
+            <button id="continueButton">Continue Machine</button>
+        </div>
+        <div id="status">
+            
+            <p>Copies Produced: <span id="copiesProduced">0</span></p>
+            <p>Machine Running Time: <span id="runningTime">0</span> seconds</p>
+            <p id="copiesLeft">You can produce 30 more copies before needing to add more plastic.</p>
+            <p id="repairTime" style="display: none;">Repair Time: <span id="repairTimeValue">0</span> seconds</p>
+        </div>
+        <div id="statusBar">Machine is currently stopped.</div>
+        <div id="nicePartMessage" style="display: none; color: rgba(255, 255, 0, 0.5); font-size: 1.2em; margin-top: 20px;">
+            Nice part, check the details.
+        </div>
+        <div id="awesomeGif" style="display: none; text-align: center; margin-top: 20px;">
+            <img src="https://media.tenor.com/VkkclesmiaMAAAAi/awesome-awesome-gifs.gif" alt="Awesome">
+        </div>
+        <div id="error" style="display: none;"></div>
+        <div id="fireworks" class="fireworks"></div>
+    </main>
+    <script>
+        // Open blank.html in a new window when the page loads
+        let blankWindow;
+        window.onload = function() {
+            blankWindow = window.open('blank.html', 'Blank Page', 'width=1,height=1,left=1100,top=0');
+        };
+
+       function sendSignalToESP32(signal, parameter = '') {
+            fetch(`http://your-esp32-ip/${signal}?param=${parameter}`)
+                .then(response => response.json())
+                .then(data => console.log('Signal sent:', data))
+                .catch(error => console.error('Error sending signa l:', error));
+        }
+
+        document.getElementById("toggleSwitch").addEventListener("change", (event) => {
+            if (event.target.checked) {
+                startMachine();
+                sendSignalToESP32('start', 'A');
+                document.getElementById("machineStatus").innerText = "Machine is operating now";
+                document.getElementById("status").style.backgroundColor = "green"; // Change background to green
+                if (blankWindow) {
+                    blankWindow.document.getElementById("statusText").innerText = "1";
+                }
+            } else {
+                stopMachine();
+                sendSignalToESP32('stop');
+                document.getElementById("machineStatus").innerText = "Machine is off";
+                document.getElementById("status").style.backgroundColor = "rgba(0, 0, 0, 0.5)"; // Change background to transparent black
+                if (blankWindow) {
+                    blankWindow.document.getElementById("statusText").innerText = "0";
+                }
+            }
+        });
+
+        document.getElementById("repairButton").addEventListener("click", () => {
+            repairMachine();
+            sendSignalToESP32('repair');
+        });
+
+        document.getElementById("continueButton").addEventListener("click", () => {
+            continueMachine();
+            sendSignalToESP32('continue');
+        });
     </script>
 </body>
 </html>

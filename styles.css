@@ -1,0 +1,222 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    background: url('https://www.3erp.com/wp-content/uploads/2020/04/what-is-injection-molding.png') no-repeat center center fixed;
+    background-size: cover;
+    color: #fff; /* White text */
+    transition: background-color 0.5s ease;
+}
+
+header {
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+    color: #ffff00; /* Yellow text */
+    padding: 20px 0;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    animation: fadeIn 1s ease-in-out;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+nav ul li {
+    display: inline;
+    margin: 0 15px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #ffff00; /* Yellow text */
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ffd700; /* Darker yellow */
+}
+
+main {
+    background-color: #333; /* Dark gray background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    max-width: 800px;
+    margin: 20px auto;
+    animation: fadeIn 1s ease-in-out;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ffff00; /* Yellow background */
+    color: #000; /* Black text */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #ffd700; /* Darker yellow */
+    transform: scale(1.05);
+}
+
+#status {
+    margin-top: 20px;
+    background-color: #333; /* Dark gray background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+#status p {
+    font-size: 18px;
+}
+
+#error {
+    color: red;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+#temperature {
+    font-size: 18px;
+    color: #ffff00; /* Yellow text */
+    font-weight: bold;
+}
+
+.fireworks {
+    display: none;
+}
+
+#technicalDetails {
+    margin-top: 20px;
+    background-color: #333; /* Dark gray background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    transition: box-shadow 0.3s ease;
+    animation: fadeIn 1s ease-in-out;
+}
+
+#technicalDetails p {
+    font-size: 18px;
+    color: #ffff00; /* Yellow text */
+    font-weight: bold;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #333; /* Dark gray background */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    animation: fadeIn 1s ease-in-out;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+table th {
+    background-color: #000; /* Black background */
+    color: #ffff00; /* Yellow text */
+}
+
+table tr:nth-child(even) {
+    background-color: #444; /* Slightly lighter gray */
+}
+
+.temperature {
+    display: inline-block;
+    margin: 20px;
+    padding: 20px;
+    background-color: #333; /* Dark gray background */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s;
+    animation: fadeIn 1s ease-in-out;
+}
+
+.temperature:hover {
+    transform: scale(1.1);
+}
+
+.temp-value {
+    font-size: 2em;
+    color: #ffff00; /* Yellow text */
+}
+
+.seven-segment {
+    display: inline-block;
+    font-family: 'Seven Segment', sans-serif;
+    font-size: 2em;
+    color: #ffff00; /* Yellow color */
+    background-color: #000; /* Black background */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.5em;
+    }
+
+    nav ul li {
+        display: block;
+        margin: 10px 0;
+    }
+
+    button {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    #status {
+        padding: 10px;
+    }
+
+    #status p {
+        font-size: 16px;
+    }
+
+    .temperature {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .temp-value {
+        font-size: 1.5em;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    table th, table td {
+        padding: 5px;
+    }
+}

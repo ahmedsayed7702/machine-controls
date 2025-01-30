@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Details</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Black background */
+            text-align: center;
+            padding: 50px;
+            color: #fff; /* White text */
+            transition: background-color 0.5s ease-in-out;
+        }
+        .temperature {
+            display: inline-block;
+            margin: 20px;
+            padding: 20px;
+            background-color: #333; /* Dark gray background */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .temperature:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+        .temp-value {
+            font-size: 2em;
+            color: #ffff00; /* Yellow text */
+        }
+        .seven-segment {
+            font-family: 'Digital-7', sans-serif;
+            color: #ffff00; /* Yellow color */
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px;
+            }
+
+            .temperature {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .temp-value {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Technical Details</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Overview</a></li>
+                <li><a href="technical-details.html">Technical Details</a></li>
+                <li><a href="operations-details.html">Operations Details</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main id="technicalDetails">
+        <div id="temp1" class="temperature">
+            <div>Temperature 1</div>
+            <div class="temp-value seven-segment">0 °C</div>
+        </div>
+        <div id="temp2" class="temperature">
+            <div>Temperature 2</div>
+            <div class="temp-value seven-segment">0 °C</div>
+        </div>
+        <div id="temp3" class="temperature">
+            <div>Temperature 3</div>
+            <div class="temp-value seven-segment">0 °C</div>
+        </div>
+        <div id="temp4" class="temperature">
+            <div>Temperature 4</div>
+            <div class="temp-value seven-segment">0 °C</div>
+        </div>
+    </main>
+    <script>
+        function updateTemperature(id, value) {
+            document.getElementById(id).querySelector('.temp-value').textContent = value + ' °C';
+        }
+
+        function updateStatus(isOn) {
+            const statusElement = document.getElementById('status');
+            if (isOn) {
+                statusElement.textContent = 'Controller is ON';
+                statusElement.style.color = 'green';
+            } else {
+                statusElement.textContent = 'Controller is OFF';
+                statusElement.style.color = 'red';
+            }
+        }
+
+        function fetchTemperatures() {
+            fetch('http://your-esp32-ip/temperature')
+                .then(response => response.json())
+                .then(data => {
+                    updateTemperature('temp1', data.temp1);
+                    updateTemperature('temp2', data.temp2);
+                    updateTemperature('temp3', data.temp3);
+                    updateTemperature('temp4', data.temp4);
+                    updateStatus(true);
+                })
+                .catch(error => {
+                    console.error('Error fetching temperatures:', error);
+                    updateTemperature('temp1', 0);
+                    updateTemperature('temp2', 0);
+                    updateTemperature('temp3', 0);
+                    updateTemperature('temp4', 0);
+                    updateStatus(false);
+                });
+        }
+
+        setInterval(fetchTemperatures, 5000); // Fetch temperatures every 5 seconds
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.body.insertAdjacentHTML('beforeend', '<div id="status" style="margin-top: 20px; font-size: 1.2em;">Controller is OFF</div>');
+        });
+
+        function sendSignalToESP32(signal, parameter = '') {
+            fetch(`http://your-esp32-ip/${signal}?param=${parameter}`)
+                .then(response => response.json())
+                .then(data => console.log('Signal sent:', data))
+                .catch(error => console.error('Error sending signal:', error));
+        }
+
+        document.getElementById("startButton").addEventListener("click", () => {
+            startMachine();
+            sendSignalToESP32('start', 'A');
+        });
+
+        document.getElementById("stopButton").addEventListener("click", () => {
+            stopMachine();
+            sendSignalToESP32('stop');
+        });
+
+        document.getElementById("repairButton").addEventListener("click", () => {
+            repairMachine();
+            sendSignalToESP32('repair');
+        });
+
+        document.getElementById("continueButton").addEventListener("click", () => {
+            continueMachine();
+            sendSignalToESP32('continue');
+        });
+
+        function resetOperationsLog() {
+            localStorage.setItem('machineLogs', JSON.stringify([]));
+            updateOperationsPage();
+        }
+
+        document.getElementById("resetButton").addEventListener("click", () => {
+            resetOperationsLog();
+            sendSignalToESP32('reset', 'A');
+        });
+    </script>
+    <script>
+        // Simulate ESP32 input for demonstration purposes
+        function simulateESP32Input() {
+            const simulatedData = {
+                temp1: Math.floor(Math.random() * 100),
+                temp2: Math.floor(Math.random() * 100),
+                temp3: Math.floor(Math.random() * 100),
+                temp4: Math.floor(Math.random() * 100)
+            };
+            updateTemperature('temp1', simulatedData.temp1);
+            updateTemperature('temp2', simulatedData.temp2);
+            updateTemperature('temp3', simulatedData.temp3);
+            updateTemperature('temp4', simulatedData.temp4);
+            updateStatus(true);
+        }
+
+        // Call simulateESP32Input function for demonstration purposes
+        setInterval(simulateESP32Input, 5000);
+    </script>
+</body>
+</html>
