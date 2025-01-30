@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Control</title>
+    <script defer src="script.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        button { font-size: 18px; padding: 10px 20px; margin: 10px; cursor: pointer; border: none; border-radius: 5px; }
+        #startButton { background-color: green; color: white; }
+        #stopButton { background-color: red; color: white; }
+        #status { font-size: 22px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Machine Control Panel</h1>
+    <button id="startButton">Start Machine</button>
+    <button id="stopButton">Stop Machine</button>
+
+    <p id="status">Status: <span id="machineStatus">Loading...</span></p>
+
+    <script>
+        function updateStatus(status) {
+            localStorage.setItem("machineStatus", status);
+            document.getElementById("machineStatus").textContent = status === "1" ? "Running" : "Stopped";
+
+            // Notify status.html to update
+            window.dispatchEvent(new Event("storage"));
+        }
+
+        document.getElementById("startButton").addEventListener("click", () => updateStatus("
